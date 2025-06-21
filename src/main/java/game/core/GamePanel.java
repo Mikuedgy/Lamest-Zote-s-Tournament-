@@ -1,5 +1,6 @@
 package game.core;
 
+import game.graphics.SpriteLoader;
 import game.entities.Enemy;
 import game.entities.Player;
 import game.input.KeyHandler;
@@ -10,6 +11,9 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
     //Atributos
+    private Font titleFont;
+    private Font menuFont;
+
     private Player player;
     private WaveManager waveManager;
     private KeyHandler keyHandler;
@@ -31,6 +35,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         keyHandler = new KeyHandler();
         addKeyListener(keyHandler);
+
+        titleFont = SpriteLoader.loadFont("/fonts/BodoniModaSC.ttf", 80f);
+        menuFont = titleFont.deriveFont(40f);
+
     }
 
     public void run(){
@@ -52,8 +60,16 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
     public void update(){
+        if (currentState == menu_state && keyHandler.enter) {
+            System.out.println("ENTER puchado");
+            currentState = playing_state;
+            keyHandler.enter = false;
 
-
+        } else if (currentState == gameover_state && keyHandler.enter) {
+            System.out.println("puchaste enter");
+            currentState = menu_state;
+            keyHandler.enter = false;
+        }
     }
     public void startGame(){
         running = true;
@@ -62,6 +78,12 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     //Metodos de dibujo
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        drawGraphics(g);
+    }
+
     public void drawGraphics(Graphics g){
         if (currentState == menu_state){
             drawMenu(g);
@@ -78,11 +100,11 @@ public class GamePanel extends JPanel implements Runnable {
         g.fillRect(0, 0, getWidth(), getHeight());
 
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 36));
-        g.drawString("Zote Tournament", 100, 100);
-
+        g.setFont(titleFont);
+        g.drawString("Lamest Zote's", 280, 400);
+        g.drawString("Tournament", 300, 500);
         g.setFont(new Font("Arial", Font.PLAIN, 20));
-        g.drawString("Presiona ENTER para comenzar", 100, 200);
+        g.drawString("presiona ENTER para comenzar", 390, 600);
     }
     private void drawGameOver(Graphics g) {
         g.setColor(Color.BLACK);
