@@ -123,7 +123,7 @@ public class GamePanel extends JPanel implements Runnable {
         g.setColor(Color.WHITE);
         g.setFont(titleFont);
         g.drawString("Lamest Zote's", 350, 330);
-        g.drawString("Tournament", 370, 400);
+        g.drawString("Tournament", 370, 410);
         g.setFont(new Font("Arial", Font.PLAIN, 20));
         g.drawString("presiona ENTER para comenzar", 460, 450);
     }
