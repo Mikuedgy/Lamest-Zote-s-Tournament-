@@ -1,13 +1,13 @@
 package game.core;
 
 import game.graphics.SpriteLoader;
-import game.entities.Enemy;
 import game.entities.Player;
 import game.input.KeyHandler;
 import game.logic.WaveManager;
 
 import javax.swing.JPanel;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class GamePanel extends JPanel implements Runnable {
     //Atributos
@@ -21,6 +21,7 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean running;
     private int currentState;
     private Thread gameThread;
+    private BufferedImage arenaBackground;
 
     public static final int menu_state = 0;
     public static final int playing_state = 1;
@@ -38,6 +39,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         titleFont = SpriteLoader.loadFont("/fonts/BodoniModaSC.ttf", 80f);
         menuFont = titleFont.deriveFont(40f);
+
+        arenaBackground = SpriteLoader.loadImage("/background/arena.png");
 
     }
 
@@ -88,12 +91,13 @@ public class GamePanel extends JPanel implements Runnable {
         if (currentState == menu_state){
             drawMenu(g);
         } else if (currentState == playing_state){
-
+            drawPlaying(g);
         } else if (currentState == gameover_state){
             drawGameOver(g);
 
         }
     }
+
 
     private void drawMenu(Graphics g) {
         g.setColor(Color.BLACK);
@@ -105,6 +109,9 @@ public class GamePanel extends JPanel implements Runnable {
         g.drawString("Tournament", 300, 500);
         g.setFont(new Font("Arial", Font.PLAIN, 20));
         g.drawString("presiona ENTER para comenzar", 390, 600);
+    }
+    private void drawPlaying(Graphics g) {
+        g.drawImage(arenaBackground, 0, 0, getWidth(), getHeight(), null);
     }
     private void drawGameOver(Graphics g) {
         g.setColor(Color.BLACK);

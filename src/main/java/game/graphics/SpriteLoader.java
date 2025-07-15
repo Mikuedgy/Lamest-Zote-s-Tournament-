@@ -9,11 +9,18 @@ import java.io.InputStream;
 
 public class SpriteLoader {
 
-
-
-
-
-
+    public static BufferedImage loadImage(String path) {
+        try (InputStream is = SpriteLoader.class.getResourceAsStream(path)) {
+            if (is == null) {
+                System.err.println("[Error] No se encontró la imagen en: " + path);
+                return null;
+            }
+            return ImageIO.read(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public static Font loadFont(String path, float size) {
         try (InputStream is = SpriteLoader.class.getResourceAsStream(path)) {
