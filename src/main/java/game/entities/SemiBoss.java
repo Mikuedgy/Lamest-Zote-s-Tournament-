@@ -1,6 +1,6 @@
 package game.entities;
 
-public class SemiBoss extends Boss{
+public abstract class SemiBoss extends Boss{
     //Atributos
 
     //Constructor

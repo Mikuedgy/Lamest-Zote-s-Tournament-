@@ -1,6 +1,6 @@
 package game.entities;
 
-public class EnemyC extends Enemy{
+public abstract class EnemyC extends Enemy{
     //Atributos
 
     //Constructor

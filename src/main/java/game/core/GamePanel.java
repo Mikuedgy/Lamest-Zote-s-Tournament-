@@ -30,7 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
 
    //Constructor
     public GamePanel() {
-        setPreferredSize(new Dimension(1024,900));
+        setPreferredSize(new Dimension(1200,700));
         setBackground(Color.BLACK);
         setFocusable(true);
 
@@ -41,6 +41,19 @@ public class GamePanel extends JPanel implements Runnable {
         menuFont = titleFont.deriveFont(40f);
 
         arenaBackground = SpriteLoader.loadImage("/background/arena.png");
+        player = new Player(
+                100, // x
+                0.5,   // speed
+                100, // maxHealth
+                100, // health
+                10,  // damage
+                64,  // height
+                64,  // width
+                565, // y (donde flota por ahora)
+                100, // mana
+                100, // maxMana
+                keyHandler
+        );
 
     }
 
@@ -62,6 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
     }
+
     public void update(){
         if (currentState == menu_state && keyHandler.enter) {
             System.out.println("ENTER puchado");
@@ -72,6 +86,9 @@ public class GamePanel extends JPanel implements Runnable {
             System.out.println("puchaste enter");
             currentState = menu_state;
             keyHandler.enter = false;
+
+        } else if (currentState == playing_state) {
+            player.update();
         }
     }
     public void startGame(){
@@ -105,13 +122,14 @@ public class GamePanel extends JPanel implements Runnable {
 
         g.setColor(Color.WHITE);
         g.setFont(titleFont);
-        g.drawString("Lamest Zote's", 280, 400);
-        g.drawString("Tournament", 300, 500);
+        g.drawString("Lamest Zote's", 350, 330);
+        g.drawString("Tournament", 370, 400);
         g.setFont(new Font("Arial", Font.PLAIN, 20));
-        g.drawString("presiona ENTER para comenzar", 390, 600);
+        g.drawString("presiona ENTER para comenzar", 460, 450);
     }
     private void drawPlaying(Graphics g) {
         g.drawImage(arenaBackground, 0, 0, getWidth(), getHeight(), null);
+        player.draw(g);
     }
     private void drawGameOver(Graphics g) {
         g.setColor(Color.BLACK);

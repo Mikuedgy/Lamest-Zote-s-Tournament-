@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 public class KeyHandler implements KeyListener {
     //Atributos
     public boolean up, down;
-    public boolean left, rigth;
+    public boolean left, right;
     public boolean attack;
     public boolean charge;
     public boolean enter;
@@ -26,7 +26,7 @@ public class KeyHandler implements KeyListener {
             left = true;
         }
         if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-            rigth = true;
+            right = true;
         }
         if(e.getKeyCode() == KeyEvent.VK_X){
             attack = true;
@@ -50,7 +50,7 @@ public class KeyHandler implements KeyListener {
             left = false;
         }
         if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-            rigth = false;
+            right = false;
         }
         if(e.getKeyCode() == KeyEvent.VK_X){
             attack = false;

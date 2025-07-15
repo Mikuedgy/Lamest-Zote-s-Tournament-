@@ -1,6 +1,6 @@
 package game.entities;
 
-public class FinalBoss extends Boss {
+public abstract class FinalBoss extends Boss {
     //Atributos
 
     //Constructor
