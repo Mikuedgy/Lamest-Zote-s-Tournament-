@@ -1,14 +1,11 @@
 package game.entities;
 
-
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import game.graphics.SpriteLoader;
 
 public  class EnemyA extends Enemy{
     //Atributos
-
     private BufferedImage[] walkRightSprites;
     private BufferedImage[] walkLeftSprites;
     private int animationIndex = 0;
@@ -16,9 +13,14 @@ public  class EnemyA extends Enemy{
     private int animationSpeed = 80;
 
     private boolean facingRight = false;
-    private boolean alive = true;
 
     private Player targetPlayer;
+
+    //daño
+    private boolean isDamaged = false;
+    private int damageCooldown = 0;
+    private final int damageDelay = 30;
+
     //Constructor
     public EnemyA(double x, double speed, int maxHealth, int damage, double height, double width, double y, Player targetPlayer) {
         super(x, speed, maxHealth, maxHealth, damage, height, width, y);
@@ -43,8 +45,12 @@ public  class EnemyA extends Enemy{
         walkLeftSprites[3] = SpriteLoader.loadImage("/enemyA/walk3l.png");
     }
     @Override
+    public boolean isAlive() {
+        return health > 0;
+    }
+    @Override
     public void update() {
-        if (!alive || targetPlayer == null) return;
+        if (!isAlive() || targetPlayer == null) return;
 
         // Movimiento hacia el jugador
         if (x < targetPlayer.x) {
@@ -61,12 +67,36 @@ public  class EnemyA extends Enemy{
             animationIndex = (animationIndex + 1) % walkRightSprites.length;
             animationCounter = 0;
         }
+
+        if (getBounds().intersects(targetPlayer.getBounds())) {
+            targetPlayer.takeDamage(damage);
+        }
+
+        if (isDamaged) {
+            damageCooldown--;
+            if (damageCooldown <= 0) {
+                isDamaged = false;
+            }
+        }
     }
 
 
     @Override
+    public void takeDamage(int amount) {
+        if (isDamaged) return;
+
+        health -= amount;
+        if (health < 0) health = 0;
+
+        isDamaged = true;
+        damageCooldown = damageDelay;
+    }
+
+
+
+    @Override
     public void draw(Graphics g) {
-        if (!alive) return;
+        if (!isAlive()) return;
 
         BufferedImage currentFrame = facingRight
                 ? walkRightSprites[animationIndex]
@@ -79,18 +109,19 @@ public  class EnemyA extends Enemy{
         return new Rectangle((int) x, (int) y, (int) width, (int) height);
     }
     @Override
+    public Rectangle getAttackBounds() {
+        return getBounds(); // usa su propio cuerpo como ataque
+    }
+    public boolean isAttacking() {
+        return true; // siempre que toca al jugador
+    }
+
+    @Override
     public void attack(){
 
     }
-
-    public void takeDamage(int damage) {
-        this.health -= damage;
-        if (health <= 0) {
-            alive = false;
-        }
+    public boolean isDamaged() {
+        return isDamaged;
     }
 
-    public boolean isAlive() {
-        return alive;
-    }
 }

@@ -1,14 +1,10 @@
 package game.entities;
 
-
-
 import game.input.KeyHandler;
 import game.graphics.SpriteLoader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
-
 
 public class Player extends Entity{
     //Atributos
@@ -36,6 +32,11 @@ public class Player extends Entity{
     private boolean facingRight = true;
     private boolean moving = false;
 
+    //daño
+    private boolean isDamaged = false;
+    private int damageCooldown = 0;
+    private final int damageDelay = 30;
+
     //Constructor
     public Player(double x, double speed, int maxHealth, int health, int damage, double height, double width, double y, int mana, int maxMana, KeyHandler keyHandler) {
         super(x, speed, maxHealth, health, damage, height, width, y);
@@ -44,20 +45,6 @@ public class Player extends Entity{
         this.keyHandler = keyHandler;
 
         loadSprites();
-    }
-
-    @Override
-    public Rectangle getBounds() {
-        return new Rectangle((int) x, (int) y, (int) width, (int) height);
-    }
-
-    @Override
-    public void attack() {
-        if (!attacking) {
-            attacking = true;
-            attackIndex = 0;
-            attackCounter = 0;
-        }
     }
 
     @Override
@@ -103,6 +90,61 @@ public class Player extends Entity{
             animationIndex = 0;
         }
 
+        if (isDamaged) {
+            damageCooldown--;
+            if (damageCooldown <= 0) {
+                isDamaged = false;
+            }
+        }
+
+    }
+    @Override
+    public void attack() {
+        if (!attacking) {
+            attacking = true;
+            attackIndex = 0;
+            attackCounter = 0;
+        }
+    }
+    @Override
+    public Rectangle getAttackBounds() {
+        if (!attacking) return new Rectangle(0, 0, 0, 0); // sin colisión
+
+        int attackWidth = 40;
+        int attackHeight = (int) height;
+
+        if (facingRight) {
+            return new Rectangle((int)(x + width), (int)y, attackWidth, attackHeight);
+        } else {
+            return new Rectangle((int)(x - attackWidth), (int)y, attackWidth, attackHeight);
+        }
+    }
+    @Override
+    public void takeDamage(int amount) {
+        if (isDamaged) return;
+
+        health -= amount;
+        if (health < 0) health = 0;
+
+        isDamaged = true;
+        damageCooldown = damageDelay;
+    }
+    @Override
+    public Rectangle getBounds() {
+
+        return new Rectangle((int) x, (int) y, (int) width, (int) height);
+    }
+
+    public boolean isDamaged() {
+        return isDamaged;
+    }
+
+    public boolean isAlive() {
+        return health > 0;
+    }
+
+    public boolean isAttacking() {
+        return attacking;
     }
 
     @Override
@@ -162,22 +204,5 @@ public class Player extends Entity{
         attackLeftSprites[3] = SpriteLoader.loadImage("/player/attack3l.png");
         attackLeftSprites[4] = SpriteLoader.loadImage("/player/attack0l.png");
 
-    }
-
-    //Getters y Setters
-    public int getMana() {
-        return mana;
-    }
-
-    public void setMana(int mana) {
-        this.mana = mana;
-    }
-
-    public int getMaxMana() {
-        return maxMana;
-    }
-
-    public void setMaxMana(int maxMana) {
-        this.maxMana = maxMana;
     }
 }

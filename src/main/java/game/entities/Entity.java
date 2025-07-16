@@ -1,5 +1,6 @@
 package game.entities;
 
+
 import java.awt.*;
 
 public abstract class Entity {
@@ -23,12 +24,20 @@ public abstract class Entity {
     }
 
     //Metodos
+    public boolean isAlive() {
+        return health > 0;
+    }
     public abstract Rectangle getBounds();
     public abstract void update();
     public abstract void draw(Graphics g);
     public abstract void attack();
-
-
-
-
+    public abstract Rectangle getAttackBounds();
+    public abstract void takeDamage(int amount);
+    //Getters
+    public int getHealth() {
+        return health;
+    }
+    public int getDamage() {
+        return damage;
+    }
 }

@@ -101,7 +101,33 @@ public class GamePanel extends JPanel implements Runnable {
             player.update();
             waveManager.update();
         }
+
+        for (EnemyA enemy : waveManager.getEnemies()) {
+            // Jugador golpea enemigo
+            if (player.isAttacking()
+                    && player.getAttackBounds().intersects(enemy.getBounds())
+                    && !enemy.isDamaged()) {
+
+                enemy.takeDamage(player.getDamage());
+                System.out.println("Jugador golpeó al enemigo. Vida enemiga: " + enemy.getHealth());
+            }
+
+            // Enemigo golpea jugador
+            if (enemy.getBounds().intersects(player.getBounds())
+                    && !player.isDamaged()) {
+
+                player.takeDamage(enemy.getDamage());
+                System.out.println("Jugador recibió daño. Vida: " + player.getHealth());
+            }
+        }
+
+        // Puedes poner aquí el cambio a estado de game over, por ejemplo:
+        if (player.getHealth() <= 0) {
+            currentState = gameover_state;
+        }
+
     }
+
     public void startGame(){
         running = true;
         gameThread = new Thread(this);
