@@ -1,5 +1,9 @@
 package game.core;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import game.entities.EnemyA;
 import game.graphics.SpriteLoader;
 import game.entities.Player;
 import game.input.KeyHandler;
@@ -26,6 +30,8 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int menu_state = 0;
     public static final int playing_state = 1;
     public static final int gameover_state = 2;
+
+    private List<EnemyA> enemies = new ArrayList<>();
 
 
    //Constructor
@@ -55,6 +61,9 @@ public class GamePanel extends JPanel implements Runnable {
                 keyHandler
         );
 
+        waveManager = new WaveManager(player);
+
+
     }
 
     public void run(){
@@ -77,6 +86,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(){
+
         if (currentState == menu_state && keyHandler.enter) {
             System.out.println("ENTER puchado");
             currentState = playing_state;
@@ -89,6 +99,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         } else if (currentState == playing_state) {
             player.update();
+            waveManager.update();
         }
     }
     public void startGame(){
@@ -130,6 +141,8 @@ public class GamePanel extends JPanel implements Runnable {
     private void drawPlaying(Graphics g) {
         g.drawImage(arenaBackground, 0, 0, getWidth(), getHeight(), null);
         player.draw(g);
+        waveManager.draw(g);
+
     }
     private void drawGameOver(Graphics g) {
         g.setColor(Color.BLACK);

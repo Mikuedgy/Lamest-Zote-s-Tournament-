@@ -26,6 +26,7 @@ public abstract class Entity {
     public abstract Rectangle getBounds();
     public abstract void update();
     public abstract void draw(Graphics g);
+    public abstract void attack();
 
 
 
