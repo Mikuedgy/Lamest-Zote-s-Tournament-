@@ -45,7 +45,7 @@ public class Player extends Entity{
     }
 
     @Override
-    public void update() {
+    public void updateEntity() {
         //Ataque
         if (keyHandler.attack && !attacking) {
             attack();
@@ -129,16 +129,8 @@ public class Player extends Entity{
 
         return new Rectangle((int) x + offsetX, (int) y + offsetY, colliderWidth, colliderHeight);
     }
-    @Override
-    public void takeDamage(int amount) {
-        if (isDamaged) return;
 
-        health -= amount;
-        if (health < 0) health = 0;
 
-        isDamaged = true;
-        damageCooldown = damageDelay;
-    }
     public void attack() {
         if (!attacking) {
             attacking = true;
