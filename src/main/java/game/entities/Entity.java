@@ -7,9 +7,15 @@ public abstract class Entity {
     //Atributos
     protected double x, y;
     protected double width, height;
-    protected int damage, health, maxHealth;
+    protected int damage;
+    protected int health;
+    protected int maxHealth;
     protected double speed;
 
+    //agregado
+    protected boolean flashing = false;
+    protected int flashTimer = 0;
+    protected final int FLASH_DURATION = 6; // 6 frames ~100ms a 60fps
 
     //Constructor
     public Entity(double x, double speed, int maxHealth, int health, int damage, double height, double width, double y) {
@@ -27,10 +33,10 @@ public abstract class Entity {
     public boolean isAlive() {
         return health > 0;
     }
+
     public abstract Rectangle getBounds();
     public abstract void update();
     public abstract void draw(Graphics g);
-    public abstract void attack();
     public abstract Rectangle getAttackBounds();
     public abstract void takeDamage(int amount);
     //Getters

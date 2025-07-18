@@ -1,17 +1,21 @@
 package game.core;
 
+import java.awt.*;
+
 import java.util.List;
+import javax.swing.JPanel;
 import java.util.ArrayList;
 
-import game.entities.EnemyA;
-import game.graphics.SpriteLoader;
+import game.entities.Enemy;
+import game.entities.SemiBoss;
+
 import game.entities.Player;
 import game.input.KeyHandler;
 import game.logic.WaveManager;
 
-import javax.swing.JPanel;
-import java.awt.*;
+import game.graphics.SpriteLoader;
 import java.awt.image.BufferedImage;
+
 
 public class GamePanel extends JPanel implements Runnable {
     //Atributos
@@ -31,7 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
     public static final int playing_state = 1;
     public static final int gameover_state = 2;
 
-    private List<EnemyA> enemies = new ArrayList<>();
+    private List<Enemy> enemies = new ArrayList<>();
 
 
    //Constructor
@@ -47,25 +51,73 @@ public class GamePanel extends JPanel implements Runnable {
         menuFont = titleFont.deriveFont(40f);
 
         arenaBackground = SpriteLoader.loadImage("/background/arena.png");
-        player = new Player(
-                100, // x
-                0.5,   // speed
-                100, // maxHealth
-                100, // health
-                10,  // damage
-                64,  // height
-                64,  // width
-                565, // y (donde flota por ahora)
-                100, // mana
-                100, // maxMana
-                keyHandler
-        );
+
+        player = new Player(600, 0.5, 100, 100, 10, 64, 64, 565, keyHandler);
 
         waveManager = new WaveManager(player);
 
 
     }
+    //Update por frame
+    public void update(){
 
+        if (currentState == menu_state && keyHandler.enter) {
+            currentState = playing_state;
+            keyHandler.enter = false;
+
+        } else if (currentState == gameover_state && keyHandler.enter) {
+            currentState = menu_state;
+            keyHandler.enter = false;
+
+        } else if (currentState == playing_state) {
+            player.update();
+            waveManager.update();
+        }
+
+        //List<Enemy> enemies = waveManager.getEnemies();
+        List<Enemy> enemies = waveManager.getEnemies();
+        enemies.removeIf(Enemy::shouldBeRemoved);
+        //enemies.removeIf(enemy -> !enemy.isAlive());
+
+
+        for (Enemy enemy : enemies) {
+
+            //Golpea al enemigo solo una vez por ataque
+            if (player.isAttacking() &&
+                    player.getAttackBounds().intersects(enemy.getBounds()) &&
+                    !enemy.hasBeenHitThisAttack()) {
+
+                enemy.takeDamage(player.getDamage());
+                System.out.println("GOLPE AL NENE");
+            }
+
+            //El enemigo daña al jugador solo si está vivo y colisiona
+            if (enemy.getBounds().intersects(player.getBounds())) {
+                if (!enemy.hasDamagedPlayerThisContact()) {
+                    player.takeDamage(enemy.getDamage());
+                    enemy.setHasDamagedPlayerThisContact(true); // <--- MUY IMPORTANTE
+                    System.out.println("auch");
+                }
+            } else {
+                // Cuando ya no colisiona, resetea el flag
+                enemy.setHasDamagedPlayerThisContact(false);
+            }
+        }
+
+        //  Reiniciar el flag cuando el ataque del jugador termina
+        if (!player.isAttacking()) {
+            for (Enemy enemy : enemies) {
+                enemy.resetHitStatus();
+            }
+        }
+
+        // Cambiar a estado de game over
+        if (player.getHealth() <= 0) {
+            currentState = gameover_state;
+        }
+
+    }
+    //Metodos de ejecucion e inicio
     public void run(){
         final int FPS = 60;
         final double drawInterval = 100000000 / FPS;
@@ -82,52 +134,7 @@ public class GamePanel extends JPanel implements Runnable {
                 delta--;
             }
         }
-
     }
-
-    public void update(){
-
-        if (currentState == menu_state && keyHandler.enter) {
-            System.out.println("ENTER puchado");
-            currentState = playing_state;
-            keyHandler.enter = false;
-
-        } else if (currentState == gameover_state && keyHandler.enter) {
-            System.out.println("puchaste enter");
-            currentState = menu_state;
-            keyHandler.enter = false;
-
-        } else if (currentState == playing_state) {
-            player.update();
-            waveManager.update();
-        }
-
-        for (EnemyA enemy : waveManager.getEnemies()) {
-            // Jugador golpea enemigo
-            if (player.isAttacking()
-                    && player.getAttackBounds().intersects(enemy.getBounds())
-                    && !enemy.isDamaged()) {
-
-                enemy.takeDamage(player.getDamage());
-                System.out.println("Jugador golpeó al enemigo. Vida enemiga: " + enemy.getHealth());
-            }
-
-            // Enemigo golpea jugador
-            if (enemy.getBounds().intersects(player.getBounds())
-                    && !player.isDamaged()) {
-
-                player.takeDamage(enemy.getDamage());
-                System.out.println("Jugador recibió daño. Vida: " + player.getHealth());
-            }
-        }
-
-        // Puedes poner aquí el cambio a estado de game over, por ejemplo:
-        if (player.getHealth() <= 0) {
-            currentState = gameover_state;
-        }
-
-    }
-
     public void startGame(){
         running = true;
         gameThread = new Thread(this);
@@ -140,7 +147,6 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         drawGraphics(g);
     }
-
     public void drawGraphics(Graphics g){
         if (currentState == menu_state){
             drawMenu(g);
@@ -151,8 +157,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         }
     }
-
-
     private void drawMenu(Graphics g) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
@@ -178,6 +182,7 @@ public class GamePanel extends JPanel implements Runnable {
         g.setFont(new Font("Arial", Font.BOLD, 40));
         g.drawString("GAME OVER", 280, 300);
     }
+
     //Getters
     public WaveManager getWaveManager() {
         return waveManager;

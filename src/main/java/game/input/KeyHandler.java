@@ -10,6 +10,9 @@ public class KeyHandler implements KeyListener {
     public boolean attack;
     public boolean charge;
     public boolean enter;
+    public enum Direction { NONE, LEFT, RIGHT }
+
+    public Direction lastDirectionPressed = Direction.NONE;
 
     //Metodos
     public void keyPressed(KeyEvent e){
@@ -33,6 +36,14 @@ public class KeyHandler implements KeyListener {
         }
         if(e.getKeyCode() == KeyEvent.VK_Z){
             charge = true;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            left = true;
+            lastDirectionPressed = Direction.LEFT;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            right = true;
+            lastDirectionPressed = Direction.RIGHT;
         }
     }
 

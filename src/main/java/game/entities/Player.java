@@ -1,30 +1,30 @@
 package game.entities;
 
-import game.input.KeyHandler;
-import game.graphics.SpriteLoader;
-
 import java.awt.*;
+import game.input.KeyHandler;
 import java.awt.image.BufferedImage;
+import game.graphics.SpriteLoader;
 
 public class Player extends Entity{
     //Atributos
-    protected int mana, maxMana;
+
     private KeyHandler keyHandler;
 
+    //Sprites
     private BufferedImage[] walkRightSprites;
     private BufferedImage[] walkLeftSprites;
     private BufferedImage standRightSprite;
     private BufferedImage standLeftSprite;
     private BufferedImage[] attackRightSprites;
     private BufferedImage[] attackLeftSprites;
-
+    //Ataque
     private boolean attacking = false;
     private int attackIndex = 0;
     private int attackCounter = 0;
-    private int attackSpeed = 30; //velocidad sprites
+    private int attackSpeed = 30;
 
     private final int ATTACK_DURATION = 5; //cantidad de sprites
-
+    //Animacion movimiento
     private int animationIndex = 0;
     private int animationCounter = 0;
     private int animationSpeed = 45; //velocidad sprites
@@ -32,54 +32,58 @@ public class Player extends Entity{
     private boolean facingRight = true;
     private boolean moving = false;
 
-    //daño
+    //Damage
     private boolean isDamaged = false;
     private int damageCooldown = 0;
     private final int damageDelay = 30;
 
     //Constructor
-    public Player(double x, double speed, int maxHealth, int health, int damage, double height, double width, double y, int mana, int maxMana, KeyHandler keyHandler) {
+    public Player(double x, double speed, int maxHealth, int health, int damage, double height, double width, double y, KeyHandler keyHandler) {
         super(x, speed, maxHealth, health, damage, height, width, y);
-        this.mana = mana;
-        this.maxMana = maxMana;
         this.keyHandler = keyHandler;
-
         loadSprites();
     }
 
     @Override
     public void update() {
-
+        //Ataque
         if (keyHandler.attack && !attacking) {
             attack();
         }
-
         if (attacking) {
             attackCounter++;
             if (attackCounter >= attackSpeed) {
                 attackIndex++;
                 attackCounter = 0;
-
                 if (attackIndex >= ATTACK_DURATION) {
                     attacking = false;
                     attackIndex = 0;
                 }
             }
-            return; // No moverse mientras ataca
+            return;
         }
-
+        //Movimiento
         moving = false;
-
-        if (keyHandler.right) {
-            x += speed;
-            facingRight = true;
-            moving = true;
+        if (keyHandler.left && keyHandler.right) {
+            if (keyHandler.lastDirectionPressed == KeyHandler.Direction.LEFT) {
+                x -= speed;
+                facingRight = false;
+                moving = true;
+            } else if (keyHandler.lastDirectionPressed == KeyHandler.Direction.RIGHT) {
+                x += speed;
+                facingRight = true;
+                moving = true;
+            }
         } else if (keyHandler.left) {
             x -= speed;
             facingRight = false;
             moving = true;
+        } else if (keyHandler.right) {
+            x += speed;
+            facingRight = true;
+            moving = true;
         }
-
+        //Animacion sprites
         if (moving) {
             animationCounter++;
             if (animationCounter >= animationSpeed) {
@@ -89,7 +93,7 @@ public class Player extends Entity{
         } else {
             animationIndex = 0;
         }
-
+        //Coldown golpes
         if (isDamaged) {
             damageCooldown--;
             if (damageCooldown <= 0) {
@@ -98,26 +102,32 @@ public class Player extends Entity{
         }
 
     }
-    @Override
-    public void attack() {
-        if (!attacking) {
-            attacking = true;
-            attackIndex = 0;
-            attackCounter = 0;
-        }
-    }
+
+   //Colliders y damage
     @Override
     public Rectangle getAttackBounds() {
-        if (!attacking) return new Rectangle(0, 0, 0, 0); // sin colisión
+        if (!attacking) return new Rectangle(0, 0, 0, 0); // No atacar = sin hitbox
 
-        int attackWidth = 40;
+        int attackWidth = 35; // Más grueso (ajústalo según lo que se vea bien)
         int attackHeight = (int) height;
 
+        int offset = 35; // Pegado más al cuerpo
+
         if (facingRight) {
-            return new Rectangle((int)(x + width), (int)y, attackWidth, attackHeight);
+            return new Rectangle((int)(x + width - offset), (int)y, attackWidth, attackHeight);
         } else {
-            return new Rectangle((int)(x - attackWidth), (int)y, attackWidth, attackHeight);
+            return new Rectangle((int)(x - attackWidth + offset), (int)y, attackWidth, attackHeight);
         }
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        int colliderWidth = (int) (width * 0.3);   // 60% del ancho
+        int colliderHeight = (int) (height * 0.9); // 90% del alto
+        int offsetX = (int) ((width - colliderWidth) / 2);
+        int offsetY = (int) ((height - colliderHeight) / 2);
+
+        return new Rectangle((int) x + offsetX, (int) y + offsetY, colliderWidth, colliderHeight);
     }
     @Override
     public void takeDamage(int amount) {
@@ -129,27 +139,26 @@ public class Player extends Entity{
         isDamaged = true;
         damageCooldown = damageDelay;
     }
-    @Override
-    public Rectangle getBounds() {
-
-        return new Rectangle((int) x, (int) y, (int) width, (int) height);
+    public void attack() {
+        if (!attacking) {
+            attacking = true;
+            attackIndex = 0;
+            attackCounter = 0;
+        }
     }
-
-    public boolean isDamaged() {
-        return isDamaged;
-    }
-
-    public boolean isAlive() {
-        return health > 0;
-    }
-
     public boolean isAttacking() {
         return attacking;
     }
-
+    //Sprites y dibujado
     @Override
     public void draw(Graphics g) {
         BufferedImage currentFrame;
+
+        g.setColor(Color.RED);
+        Rectangle bounds = getBounds();
+        g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+        Rectangle attackbounds =getAttackBounds();
+        g.drawRect(attackbounds.x, attackbounds.y,attackbounds.width, attackbounds.height);
 
         if (attacking) {
             currentFrame = facingRight ? attackRightSprites[attackIndex] : attackLeftSprites[attackIndex];
@@ -163,7 +172,6 @@ public class Player extends Entity{
     }
 
     private void loadSprites() {
-
         walkRightSprites = new BufferedImage[7];
         walkLeftSprites = new BufferedImage[7];
 
@@ -187,7 +195,7 @@ public class Player extends Entity{
         attackRightSprites[3] = SpriteLoader.loadImage("/player/attack3.png");
         attackRightSprites[4] = SpriteLoader.loadImage("/player/attack0.png");
 
-        //sprites lado izq
+        //Sprites lado izquierdo
         standLeftSprite = SpriteLoader.loadImage("/player/standl.png");
 
         walkLeftSprites[0] = SpriteLoader.loadImage("/player/walk0l.png");
@@ -203,6 +211,5 @@ public class Player extends Entity{
         attackLeftSprites[2] = SpriteLoader.loadImage("/player/attack2l.png");
         attackLeftSprites[3] = SpriteLoader.loadImage("/player/attack3l.png");
         attackLeftSprites[4] = SpriteLoader.loadImage("/player/attack0l.png");
-
     }
 }
