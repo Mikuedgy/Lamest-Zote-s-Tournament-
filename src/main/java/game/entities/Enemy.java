@@ -7,6 +7,8 @@ public abstract class Enemy extends Entity {
     //Atributos personaje
     protected Player targetPlayer;
     //Sprites y animacion
+    protected int freezeFrames = 0;
+
     protected int animationIndex = 0;
     protected int animationCounter = 0;
     protected int animationSpeed = 80;
@@ -24,6 +26,10 @@ public abstract class Enemy extends Entity {
     //Update por frames
     protected void updateEntity() {
         if (!isAlive() || targetPlayer == null) return;
+        if (freezeFrames > 0) {
+            freezeFrames--;
+            return; // Saltamos la lógica de movimiento este frame
+        }
         //Persecucion del jugador
         if (x < targetPlayer.x) {
             x += speed;
@@ -45,6 +51,24 @@ public abstract class Enemy extends Entity {
                 isDamaged = false;
             }
         }
+
+    }
+    @Override
+    public void takeDamage(int amount) {
+        if (hasBeenHitThisAttack || isDamaged) return;
+
+        health -= amount;
+        if (health < 0) health = 0;
+
+        isDamaged = true;
+        damageCooldown = damageDelay;
+        hasBeenHitThisAttack = true;
+
+        // Activar parpadeo blanco
+        flashing = true;
+        flashTimer = FLASH_DURATION;
+        freezeFrames = 150;
+
     }
     //Sprites y dibujo
     @Override

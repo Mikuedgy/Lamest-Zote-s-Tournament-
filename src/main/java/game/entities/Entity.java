@@ -15,7 +15,7 @@ public abstract class Entity {
     //Animacion
     protected int flashTimer = 0;
     protected boolean flashing = false;
-    protected final int FLASH_DURATION = 10; // 6 frames ~100ms a 60fps
+    protected final int FLASH_DURATION = 20; // 6 frames ~100ms a 60fps
     //Damage y ataques
     protected int damageDelay = 30;
     protected int damageCooldown = 0;
@@ -58,6 +58,7 @@ public abstract class Entity {
         // Activar parpadeo blanco
         flashing = true;
         flashTimer = FLASH_DURATION;
+
     }
     protected void updateFlashing() {
         if (flashing) {

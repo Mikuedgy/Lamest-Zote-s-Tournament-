@@ -33,9 +33,9 @@ public  class EnemyC extends Enemy{
         walkRightSprites[4] = SpriteLoader.loadImage("/enemyC/fly4.png");
 
         walkLeftSprites[0] = SpriteLoader.loadImage("/enemyC/fly0l.png");
-        walkLeftSprites[1] = SpriteLoader.loadImage("/enemyC/fly0l.png");
-        walkLeftSprites[2] = SpriteLoader.loadImage("/enemyC/fly0l.png");
-        walkLeftSprites[3] = SpriteLoader.loadImage("/enemyC/fly0l.png");
-        walkLeftSprites[4] = SpriteLoader.loadImage("/enemyC/fly0l.png");
+        walkLeftSprites[1] = SpriteLoader.loadImage("/enemyC/fly1l.png");
+        walkLeftSprites[2] = SpriteLoader.loadImage("/enemyC/fly2l.png");
+        walkLeftSprites[3] = SpriteLoader.loadImage("/enemyC/fly3l.png");
+        walkLeftSprites[4] = SpriteLoader.loadImage("/enemyC/fly4l.png");
     }
 }

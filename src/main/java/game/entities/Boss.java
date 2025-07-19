@@ -12,7 +12,9 @@ public abstract class Boss extends Enemy {
     protected final int deathAnimationSpeed = 50;
     protected boolean playingDeathAnimation = false;
 
-    protected BufferedImage[] exploteSprites;
+    protected BufferedImage[] deathRightSprites;
+    protected BufferedImage[] deathLeftSprites;
+
     //Constructor
     public Boss(double x, double speed, int maxHealth, int health, int damage, double height, double width, double y, Player targetPlayer) {
         super(x, speed, maxHealth, health, damage, height, width, y, targetPlayer);
@@ -27,17 +29,25 @@ public abstract class Boss extends Enemy {
             return;
         }
 
-        super.updateEntity(); // Movimiento, animaciones normales, etc.
+        super.updateEntity(); // Movimiento
     }
+
+
     //Animaciones y dibujado
     @Override
     public void draw(Graphics g) {
         if (fullyDead) return;
-        // Animación de muerte
-        if (playingDeathAnimation && deathAnimationIndex < exploteSprites.length) {
-            g.drawImage(exploteSprites[deathAnimationIndex], (int) x, (int) y, (int) width, (int) height, null);
+
+        // Animación de muerte (con dirección)
+        if (playingDeathAnimation && deathAnimationIndex < deathRightSprites.length) {
+            BufferedImage deathFrame = facingRight
+                    ? deathRightSprites[deathAnimationIndex]
+                    : deathLeftSprites[deathAnimationIndex];
+
+            g.drawImage(deathFrame, (int) x, (int) y, (int) width, (int) height, null);
             return;
         }
+
         super.draw(g);
     }
     protected void handleDeathAnimation() {
@@ -51,7 +61,8 @@ public abstract class Boss extends Enemy {
                 deathAnimationCounter = 0;
                 deathAnimationIndex++;
 
-                if (deathAnimationIndex >= exploteSprites.length) {
+                int maxFrames = facingRight ? deathRightSprites.length : deathLeftSprites.length;
+                if (deathAnimationIndex >= maxFrames) {
                     fullyDead = true;
                 }
             }

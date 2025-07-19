@@ -7,9 +7,7 @@ import game.graphics.SpriteLoader;
 
 public class Player extends Entity{
     //Atributos
-
     private KeyHandler keyHandler;
-
     //Sprites
     private BufferedImage[] walkRightSprites;
     private BufferedImage[] walkLeftSprites;
@@ -23,27 +21,19 @@ public class Player extends Entity{
     private int attackCounter = 0;
     private int attackSpeed = 30;
 
-    private final int ATTACK_DURATION = 5; //cantidad de sprites
     //Animacion movimiento
     private int animationIndex = 0;
     private int animationCounter = 0;
     private int animationSpeed = 45; //velocidad sprites
-
     private boolean facingRight = true;
     private boolean moving = false;
-
-    //Damage
-    private boolean isDamaged = false;
-    private int damageCooldown = 0;
-    private final int damageDelay = 30;
-
     //Constructor
     public Player(double x, double speed, int maxHealth, int health, int damage, double height, double width, double y, KeyHandler keyHandler) {
         super(x, speed, maxHealth, health, damage, height, width, y);
         this.keyHandler = keyHandler;
         loadSprites();
     }
-
+    //Animacion por frames
     @Override
     public void updateEntity() {
         //Ataque
@@ -55,7 +45,7 @@ public class Player extends Entity{
             if (attackCounter >= attackSpeed) {
                 attackIndex++;
                 attackCounter = 0;
-                if (attackIndex >= ATTACK_DURATION) {
+                if (attackIndex >= attackRightSprites.length) {
                     attacking = false;
                     attackIndex = 0;
                 }
@@ -102,13 +92,12 @@ public class Player extends Entity{
         }
 
     }
-
    //Colliders y damage
     @Override
     public Rectangle getAttackBounds() {
         if (!attacking) return new Rectangle(0, 0, 0, 0); // No atacar = sin hitbox
 
-        int attackWidth = 35; // Más grueso (ajústalo según lo que se vea bien)
+        int attackWidth = 45; // Más grueso (ajústalo según lo que se vea bien)
         int attackHeight = (int) height;
 
         int offset = 35; // Pegado más al cuerpo
@@ -119,7 +108,6 @@ public class Player extends Entity{
             return new Rectangle((int)(x - attackWidth + offset), (int)y, attackWidth, attackHeight);
         }
     }
-
     @Override
     public Rectangle getBounds() {
         int colliderWidth = (int) (width * 0.3);   // 60% del ancho
@@ -129,8 +117,6 @@ public class Player extends Entity{
 
         return new Rectangle((int) x + offsetX, (int) y + offsetY, colliderWidth, colliderHeight);
     }
-
-
     public void attack() {
         if (!attacking) {
             attacking = true;
@@ -144,25 +130,36 @@ public class Player extends Entity{
     //Sprites y dibujado
     @Override
     public void draw(Graphics g) {
-        BufferedImage currentFrame;
-
+        // colisionadores para debug
         g.setColor(Color.RED);
         Rectangle bounds = getBounds();
         g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-        Rectangle attackbounds =getAttackBounds();
-        g.drawRect(attackbounds.x, attackbounds.y,attackbounds.width, attackbounds.height);
+        Rectangle attackBounds = getAttackBounds();
+        g.drawRect(attackBounds.x, attackBounds.y, attackBounds.width, attackBounds.height);
+
+        BufferedImage baseFrame;
 
         if (attacking) {
-            currentFrame = facingRight ? attackRightSprites[attackIndex] : attackLeftSprites[attackIndex];
+            baseFrame = facingRight
+                    ? attackRightSprites[attackIndex]
+                    : attackLeftSprites[attackIndex];
         } else if (moving) {
-            currentFrame = facingRight ? walkRightSprites[animationIndex] : walkLeftSprites[animationIndex];
+            baseFrame = facingRight
+                    ? walkRightSprites[animationIndex]
+                    : walkLeftSprites[animationIndex];
         } else {
-            currentFrame = facingRight ? standRightSprite : standLeftSprite;
+            baseFrame = facingRight
+                    ? standRightSprite
+                    : standLeftSprite;
         }
 
-        g.drawImage(currentFrame, (int) x, (int) y, (int) width, (int) height, null);
-    }
+        // ---- APLICAR DESTELLO ----
+        BufferedImage currentFrame = flashing
+                ? makeWhiteImage(baseFrame)
+                : baseFrame;
 
+        g.drawImage(currentFrame, (int)x, (int)y, (int)width, (int)height, null);
+    }
     private void loadSprites() {
         walkRightSprites = new BufferedImage[7];
         walkLeftSprites = new BufferedImage[7];
@@ -204,4 +201,12 @@ public class Player extends Entity{
         attackLeftSprites[3] = SpriteLoader.loadImage("/player/attack3l.png");
         attackLeftSprites[4] = SpriteLoader.loadImage("/player/attack0l.png");
     }
+
+    public void reset() {
+        this.health = maxHealth; //
+        this.x = 600;
+        this.y = 565;
+
+    }
+
 }

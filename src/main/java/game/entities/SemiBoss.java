@@ -27,7 +27,8 @@ public  class SemiBoss extends Boss{
     private void loadSprites() {
         walkLeftSprites = new BufferedImage[4];
         walkRightSprites = new BufferedImage[4];
-        exploteSprites = new BufferedImage[8];
+        deathRightSprites = new BufferedImage[8];
+        deathLeftSprites = new BufferedImage[8];
         //Sprites movimiento
         walkRightSprites[0] = SpriteLoader.loadImage("/semiBoss/walk0.png");
         walkRightSprites[1] = SpriteLoader.loadImage("/semiBoss/walk1.png");
@@ -39,13 +40,20 @@ public  class SemiBoss extends Boss{
         walkLeftSprites[2] = SpriteLoader.loadImage("/semiBoss/walk2l.png");
         walkLeftSprites[3] = SpriteLoader.loadImage("/semiBoss/walk3l.png");
         //Sprites derrota
-        exploteSprites [0] = SpriteLoader.loadImage("/semiBoss/plop0.png");
-        exploteSprites [1] = SpriteLoader.loadImage("/semiBoss/plop1.png");
-        exploteSprites [2] = SpriteLoader.loadImage("/semiBoss/plop2.png");
-        exploteSprites [3] = SpriteLoader.loadImage("/semiBoss/plop3.png");
-        exploteSprites [4] = SpriteLoader.loadImage("/semiBoss/plop4.png");
-        exploteSprites [5] = SpriteLoader.loadImage("/semiBoss/plop5.png");
-        exploteSprites [6] = SpriteLoader.loadImage("/semiBoss/plop6.png");
-        exploteSprites [7] = SpriteLoader.loadImage("/semiBoss/plop7.png");
+        deathRightSprites [0] = SpriteLoader.loadImage("/semiBoss/plop1.png");
+        deathRightSprites [1] = SpriteLoader.loadImage("/semiBoss/plop2.png");
+        deathRightSprites [2] = SpriteLoader.loadImage("/semiBoss/plop3.png");
+        deathRightSprites [3] = SpriteLoader.loadImage("/semiBoss/plop4.png");
+        deathRightSprites [4] = SpriteLoader.loadImage("/semiBoss/plop5.png");
+        deathRightSprites [5] = SpriteLoader.loadImage("/semiBoss/plop6.png");
+        deathRightSprites [6] = SpriteLoader.loadImage("/semiBoss/plop7.png");
+
+        deathLeftSprites [0] = SpriteLoader.loadImage("/semiBoss/plop1.png");
+        deathLeftSprites [1] = SpriteLoader.loadImage("/semiBoss/plop2.png");
+        deathLeftSprites [2] = SpriteLoader.loadImage("/semiBoss/plop3.png");
+        deathLeftSprites [3] = SpriteLoader.loadImage("/semiBoss/plop4.png");
+        deathLeftSprites [4] = SpriteLoader.loadImage("/semiBoss/plop5.png");
+        deathLeftSprites [5] = SpriteLoader.loadImage("/semiBoss/plop6.png");
+        deathLeftSprites [6] = SpriteLoader.loadImage("/semiBoss/plop7.png");
     }
 }

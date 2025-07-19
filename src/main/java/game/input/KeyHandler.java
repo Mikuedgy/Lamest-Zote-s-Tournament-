@@ -48,6 +48,7 @@ public class KeyHandler implements KeyListener {
     }
 
     public void keyReleased(KeyEvent e){
+
         if(e.getKeyCode() == KeyEvent.VK_ENTER){
             enter = false;
         }
@@ -72,6 +73,5 @@ public class KeyHandler implements KeyListener {
     }
 
     public void keyTyped(KeyEvent e){
-
     }
 }
