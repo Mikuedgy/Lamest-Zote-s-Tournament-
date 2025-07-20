@@ -28,13 +28,13 @@ public abstract class Enemy extends Entity {
         if (!isAlive() || targetPlayer == null) return;
         if (freezeFrames > 0) {
             freezeFrames--;
-            return; // Saltamos la lógica de movimiento este frame
+            return;
         }
         //Persecucion del jugador
-        if (x < targetPlayer.x) {
+        if (x < targetPlayer.x - 5) {
             x += speed;
             facingRight = true;
-        } else if (x > targetPlayer.x) {
+        } else if (x > targetPlayer.x + 40) {
             x -= speed;
             facingRight = false;
         }
@@ -74,10 +74,11 @@ public abstract class Enemy extends Entity {
     @Override
     public void draw(Graphics g) {
         // Debug del colisionador
-        //g.setColor(Color.BLUE);
-        //Rectangle bounds = getBounds();
-        //g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+        g.setColor(Color.BLUE);
+        Rectangle bounds = getBounds();
+        g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
         drawSprite(g, walkRightSprites, walkLeftSprites);
+
     }
     protected void drawSprite(Graphics g, BufferedImage[] spritesRight, BufferedImage[] spritesLeft) {
         BufferedImage baseFrame = facingRight

@@ -23,7 +23,7 @@ public class FinalBoss extends Boss {
     //Update por frames
     @Override
     public void updateEntity() {
-        // Si está atacando, solo reproducir animación y aplicar daño
+        //Si está atacando, solo reproducir animación y aplicar daño
         if (attackInProgress) {
             attackAnimationCounter++;
             if (attackAnimationCounter >= attackAnimationSpeed) {
@@ -31,7 +31,7 @@ public class FinalBoss extends Boss {
                 attackAnimationIndex++;
 
                 if (attackAnimationIndex == 4) {
-                    Rectangle hitbox = getAttackBounds(); // hitbox real del golpe
+                    Rectangle hitbox = getAttackBounds(); //hitbox real del golpe
                     if (hitbox.intersects(targetPlayer.getBounds())) {
                         targetPlayer.takeDamage(damage);
                     }
@@ -53,7 +53,7 @@ public class FinalBoss extends Boss {
             attackAnimationIndex = 0;
             return;
         }
-        // Solo si no está atacando, se mueve normalmente
+        //Solo si no está atacando, se mueve normalmente
         attacking = false;
         super.updateEntity();
     }
@@ -114,13 +114,14 @@ public class FinalBoss extends Boss {
             g.drawImage(deathFrame, (int) x, (int) y, (int) width, (int) height, null);
             return;
         }
+
         if (playingDeathAnimation) {
             BufferedImage deathFrame = facingRight
                     ? deathRightSprites[Math.min(deathAnimationIndex, deathRightSprites.length - 1)]
                     : deathLeftSprites[Math.min(deathAnimationIndex, deathLeftSprites.length - 1)];
 
             int offsetVerticalFix = -10;
-            double scaleX = 0.8; //
+            double scaleX = 0.8;
             double scaleY = 0.8;
 
             int scaledWidth = (int) (width * scaleX);
@@ -131,40 +132,54 @@ public class FinalBoss extends Boss {
             g.drawImage(deathFrame, (int) x - offsetX, (int) y - offsetY - offsetVerticalFix, scaledWidth, scaledHeight, null);
             return;
         }
+
         if (attacking) {
             BufferedImage attackFrame = facingRight
                     ? attackRightSprites[attackAnimationIndex]
                     : attackLeftSprites[attackAnimationIndex];
 
+            //Usar lógica compartida de parpadeo
+            BufferedImage currentAttackFrame = flashing
+                    ? makeWhiteImage(attackFrame)
+                    : attackFrame;
+
             int offsetVerticalFix = 10;
-            double scaleX = 1.40; // más ancho
-            double scaleY = 1.45; // más alto
+            double scaleX = 1.40;
+            double scaleY = 1.45;
 
             int scaledWidth = (int) (width * scaleX);
             int scaledHeight = (int) (height * scaleY);
             int offsetX = (scaledWidth - (int) width) / 2;
             int offsetY = (scaledHeight - (int) height) / 2;
 
-            g.drawImage(attackFrame, (int) x - offsetX, (int) y - offsetY - offsetVerticalFix, scaledWidth, scaledHeight, null);
-            //Collider de damage
+            g.drawImage(currentAttackFrame, (int) x - offsetX, (int) y - offsetY - offsetVerticalFix, scaledWidth, scaledHeight, null);
+
+            //Dibujar collider principal en azul durante el ataque
+            g.setColor(Color.BLUE);
+            Rectangle bounds = getBounds();
+            g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+
+            //Collider del área de daño en rojo si está en progreso
             if (attackInProgress) {
                 Rectangle hit = getAttackBounds();
-
                 g.setColor(Color.RED);
                 g.drawRect(hit.x, hit.y, hit.width, hit.height);
             }
+
             return;
         }
+
         super.draw(g);
-        //Colider de zona de peligro
+
+        // Zona de detección (verde)
         if (isAlive() && !playingDeathAnimation && !fullyDead) {
             Rectangle detectZone = getAttackDetectionZone();
             g.setColor(Color.GREEN);
             g.drawRect(detectZone.x, detectZone.y, detectZone.width, detectZone.height);
         }
-
     }
-    private void loadSprites() {
+    @Override
+    public void loadSprites() {
         walkRightSprites = new BufferedImage[10];
         walkLeftSprites = new BufferedImage[10];
 

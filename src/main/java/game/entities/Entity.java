@@ -13,9 +13,9 @@ public abstract class Entity {
     protected double height;
     protected int maxHealth;
     //Animacion
-    protected int flashTimer = 0;
     protected boolean flashing = false;
-    protected final int FLASH_DURATION = 20; // 6 frames ~100ms a 60fps
+    protected long flashTimer = 0;
+    protected final long FLASH_DURATION = 100;
     //Damage y ataques
     protected int damageDelay = 30;
     protected int damageCooldown = 0;
@@ -35,14 +35,15 @@ public abstract class Entity {
         this.y = y;
     }
     //Metodos abstractos
+    public abstract void loadSprites();
     public abstract void draw(Graphics g);
     protected abstract void updateEntity();
     public abstract Rectangle getBounds();
     public abstract Rectangle getAttackBounds();
     //Update por frames
     public void update() {
-        updateEntity();      // lógica propia de cada tipo
-        updateFlashing();    // lógica compartida: destello
+        updateEntity();
+        updateFlashing();
     }
     //Damage y animacion
     public void takeDamage(int amount) {
@@ -75,7 +76,7 @@ public abstract class Entity {
                 int rgba = src.getRGB(x, y);
                 int alpha = (rgba >> 24) & 0xff;
                 if (alpha > 0) {
-                    whiteImg.setRGB(x, y, (alpha << 24) | 0xffffff); // blanco con misma opacidad
+                    whiteImg.setRGB(x, y, (alpha << 24) | 0xffffff);
                 }
             }
         }

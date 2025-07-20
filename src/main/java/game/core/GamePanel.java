@@ -2,10 +2,8 @@ package game.core;
 
 import java.awt.*;
 
-import java.util.List;
 import javax.swing.JPanel;
 
-import game.entities.Enemy;
 import game.entities.Player;
 import game.input.KeyHandler;
 import game.logic.WaveManager;
@@ -47,8 +45,31 @@ public class GamePanel extends JPanel implements Runnable {
         //Fondos
         arenaBackground = SpriteLoader.loadImage("/background/arena.png");
         //Jugador y enemigos
-        player = new Player(600, 0.5, 100, 10, 1, 64, 64, 565, keyHandler);
+        player = new Player(600, 0.5, 5, 5, 1, 64, 64, 565, keyHandler);
         waveManager = new WaveManager(player);
+    }
+    //Metodos de ejecucion e inicio
+    public void run(){
+        final int FPS = 60;
+        final double drawInterval = 100000000 / FPS;
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        while (running) {
+            long currentTime = System.nanoTime();
+            delta += (currentTime - lastTime) / drawInterval;
+            lastTime = currentTime;
+
+            if (delta >= 1) {
+                update();
+                repaint();
+                delta--;
+            }
+        }
+    }
+    public void startGame(){
+        running = true;
+        gameThread = new Thread(this);
+        gameThread.start();
     }
     //Update por frame
     public void update(){
@@ -80,63 +101,6 @@ public class GamePanel extends JPanel implements Runnable {
         player.reset();
         waveManager.reset();
         }
-        //UPDATE DE COLISIONES EN EL JUEGO
-        List<Enemy> enemies = waveManager.getEnemies();
-        enemies.removeIf(Enemy::shouldBeRemoved);
-
-        for (Enemy enemy : enemies) {
-            //Golpea al enemigo solo una vez por ataque
-            if (player.isAttacking() &&
-                    player.getAttackBounds().intersects(enemy.getBounds()) &&
-                    !enemy.hasBeenHitThisAttack()) {
-
-                enemy.takeDamage(player.getDamage());
-                System.out.println("GOLPE AL NENE");
-            }
-            //El enemigo daña al jugador solo si está vivo y colisiona
-            if (enemy.getBounds().intersects(player.getBounds())) {
-                if (!enemy.hasDamagedPlayerThisContact()) {
-                    player.takeDamage(enemy.getDamage());
-                    enemy.setHasDamagedPlayerThisContact(true); // <--- MUY IMPORTANTE
-
-                    System.out.println("AUCH COLISIÓN detectada con enemigo. Vida jugador: " + player.getHealth());
-                }
-            } else {
-                // Cuando ya no colisiona, resetea el flag
-                enemy.setHasDamagedPlayerThisContact(false);
-            }
-
-        }
-        //  Reiniciar el flag cuando el ataque del jugador termina
-        if (!player.isAttacking()) {
-            for (Enemy enemy : enemies) {
-                enemy.resetHitStatus();
-            }
-        }
-        player.resetHitStatus();
-    }
-    //Metodos de ejecucion e inicio
-    public void run(){
-        final int FPS = 60;
-        final double drawInterval = 100000000 / FPS;
-        double delta = 0;
-        long lastTime = System.nanoTime();
-        while (running) {
-            long currentTime = System.nanoTime();
-            delta += (currentTime - lastTime) / drawInterval;
-            lastTime = currentTime;
-
-            if (delta >= 1) {
-                update();
-                repaint();
-                delta--;
-            }
-        }
-    }
-    public void startGame(){
-        running = true;
-        gameThread = new Thread(this);
-        gameThread.start();
     }
 
     //Metodos de dibujo

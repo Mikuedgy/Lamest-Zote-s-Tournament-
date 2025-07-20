@@ -24,7 +24,7 @@ public class Player extends Entity{
     //Animacion movimiento
     private int animationIndex = 0;
     private int animationCounter = 0;
-    private int animationSpeed = 45; //velocidad sprites
+    private int animationSpeed = 45;
     private boolean facingRight = true;
     private boolean moving = false;
     //Constructor
@@ -95,9 +95,9 @@ public class Player extends Entity{
    //Colliders y damage
     @Override
     public Rectangle getAttackBounds() {
-        if (!attacking) return new Rectangle(0, 0, 0, 0); // No atacar = sin hitbox
+        if (!attacking) return new Rectangle(0, 0, 0, 0);
 
-        int attackWidth = 45; // Más grueso (ajústalo según lo que se vea bien)
+        int attackWidth = 45;
         int attackHeight = (int) height;
 
         int offset = 35; // Pegado más al cuerpo
@@ -110,8 +110,8 @@ public class Player extends Entity{
     }
     @Override
     public Rectangle getBounds() {
-        int colliderWidth = (int) (width * 0.3);   // 60% del ancho
-        int colliderHeight = (int) (height * 0.9); // 90% del alto
+        int colliderWidth = (int) (width * 0.3);
+        int colliderHeight = (int) (height * 0.9);
         int offsetX = (int) ((width - colliderWidth) / 2);
         int offsetY = (int) ((height - colliderHeight) / 2);
 
@@ -131,11 +131,11 @@ public class Player extends Entity{
     @Override
     public void draw(Graphics g) {
         //Colisionadores para debug
-        //g.setColor(Color.RED);
-        //Rectangle bounds = getBounds();
-        //g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-        //Rectangle attackBounds = getAttackBounds();
-        //g.drawRect(attackBounds.x, attackBounds.y, attackBounds.width, attackBounds.height);
+        g.setColor(Color.RED);
+        Rectangle bounds = getBounds();
+        g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+        Rectangle attackBounds = getAttackBounds();
+        g.drawRect(attackBounds.x, attackBounds.y, attackBounds.width, attackBounds.height);
 
         BufferedImage baseFrame;
 
@@ -158,7 +158,8 @@ public class Player extends Entity{
                 : baseFrame;
         g.drawImage(currentFrame, (int)x, (int)y, (int)width, (int)height, null);
     }
-    private void loadSprites() {
+    @Override
+    public void loadSprites() {
         walkRightSprites = new BufferedImage[7];
         walkLeftSprites = new BufferedImage[7];
 

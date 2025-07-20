@@ -5,10 +5,8 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
     //Atributos
-    public boolean up, down;
     public boolean left, right;
     public boolean attack;
-    public boolean charge;
     public boolean enter;
     public enum Direction { NONE, LEFT, RIGHT }
 
@@ -19,12 +17,6 @@ public class KeyHandler implements KeyListener {
         if(e.getKeyCode() == KeyEvent.VK_ENTER){
             enter = true;
         }
-        if(e.getKeyCode() == KeyEvent.VK_UP){
-            up = true;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_DOWN){
-            down = true;
-        }
         if(e.getKeyCode() == KeyEvent.VK_LEFT){
             left = true;
         }
@@ -33,9 +25,6 @@ public class KeyHandler implements KeyListener {
         }
         if(e.getKeyCode() == KeyEvent.VK_X){
             attack = true;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_Z){
-            charge = true;
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             left = true;
@@ -52,12 +41,7 @@ public class KeyHandler implements KeyListener {
         if(e.getKeyCode() == KeyEvent.VK_ENTER){
             enter = false;
         }
-        if(e.getKeyCode() == KeyEvent.VK_UP){
-            up = false;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_DOWN){
-            down = false;
-        }
+
         if(e.getKeyCode() == KeyEvent.VK_LEFT){
             left = false;
         }
@@ -66,9 +50,6 @@ public class KeyHandler implements KeyListener {
         }
         if(e.getKeyCode() == KeyEvent.VK_X){
             attack = false;
-        }
-        if(e.getKeyCode() == KeyEvent.VK_Z){
-            charge = false;
         }
     }
 

@@ -22,7 +22,8 @@ public  class EnemyC extends Enemy{
         return new Rectangle((int) x + offsetX, (int) y + offsetY, colliderWidth, colliderHeight);
     }
     //Sprites
-    private void loadSprites() {
+    @Override
+    public void loadSprites() {
         walkRightSprites = new BufferedImage[5];
         walkLeftSprites = new BufferedImage[5];
         // Sprites movimiento
