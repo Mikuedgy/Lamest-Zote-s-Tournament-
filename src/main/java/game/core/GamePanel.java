@@ -175,7 +175,6 @@ public class GamePanel extends JPanel implements Runnable {
         g.setFont(titleFont.deriveFont(24f));
         g.drawString("Wave:  " +waveManager.getCurrentWave(), 190, 40);
 
-
     }
     private void drawGameOver(Graphics g) {
         g.setColor(Color.BLACK);

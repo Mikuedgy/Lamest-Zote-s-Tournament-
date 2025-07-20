@@ -85,6 +85,12 @@ public abstract class Entity {
     public boolean isAlive() {
         return health > 0;
     }
+    public void resetHitStatus() {
+        hasBeenHitThisAttack = false;
+    }
+    public void setHasDamagedPlayerThisContact(boolean value) {
+        hasDamagedPlayerThisContact = value;
+    }
     //Getters
     public int getHealth() {
         return health;
@@ -92,16 +98,11 @@ public abstract class Entity {
     public int getDamage() {
         return damage;
     }
-    public void resetHitStatus() {
-        hasBeenHitThisAttack = false;
-    }
     public boolean hasBeenHitThisAttack() {
         return hasBeenHitThisAttack;
     }
     public boolean hasDamagedPlayerThisContact() {
         return hasDamagedPlayerThisContact;
     }
-    public void setHasDamagedPlayerThisContact(boolean value) {
-        hasDamagedPlayerThisContact = value;
-    }
+
 }

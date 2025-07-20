@@ -130,12 +130,12 @@ public class Player extends Entity{
     //Sprites y dibujado
     @Override
     public void draw(Graphics g) {
-        // colisionadores para debug
-        g.setColor(Color.RED);
-        Rectangle bounds = getBounds();
-        g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-        Rectangle attackBounds = getAttackBounds();
-        g.drawRect(attackBounds.x, attackBounds.y, attackBounds.width, attackBounds.height);
+        //Colisionadores para debug
+        //g.setColor(Color.RED);
+        //Rectangle bounds = getBounds();
+        //g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+        //Rectangle attackBounds = getAttackBounds();
+        //g.drawRect(attackBounds.x, attackBounds.y, attackBounds.width, attackBounds.height);
 
         BufferedImage baseFrame;
 
@@ -153,11 +153,9 @@ public class Player extends Entity{
                     : standLeftSprite;
         }
 
-        // ---- APLICAR DESTELLO ----
         BufferedImage currentFrame = flashing
                 ? makeWhiteImage(baseFrame)
                 : baseFrame;
-
         g.drawImage(currentFrame, (int)x, (int)y, (int)width, (int)height, null);
     }
     private void loadSprites() {

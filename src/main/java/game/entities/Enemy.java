@@ -74,10 +74,9 @@ public abstract class Enemy extends Entity {
     @Override
     public void draw(Graphics g) {
         // Debug del colisionador
-        g.setColor(Color.BLUE);
-        Rectangle bounds = getBounds();
-        g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
+        //g.setColor(Color.BLUE);
+        //Rectangle bounds = getBounds();
+        //g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
         drawSprite(g, walkRightSprites, walkLeftSprites);
     }
     protected void drawSprite(Graphics g, BufferedImage[] spritesRight, BufferedImage[] spritesLeft) {
